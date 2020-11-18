@@ -4,6 +4,10 @@ from socket import AF_INET, SOCK_STREAM
 import time
 import sys
 
+if len(sys.argv) != 4:
+    print("Usage:\npython3 TCPclient_persistent.py buffer_size disable_nagle?(y/n) disable_delayed_ack?(y/n)\nExample:\npython3 TCPclient_persistent.py 32 y y")
+    exit()
+
 BUFFER_SIZE = int(sys.argv[1])
 
 HOST = "127.0.0.1"
@@ -33,6 +37,10 @@ print("[+] Connected(took " + str(end_time-start_time) + " seconds).")
 while True:
     # ask user for the name of the file to receieve
     filename = input("Which file do you want to receive?\n(Enter '<EXIT>' to close the connection and exit)\n")
+
+    if ("." not in filename) and (filename != "<EXIT>"):
+        print("Invalid filename")
+        continue
 
     # send the filename to the server
     client_socket.send((str(filename)).encode())

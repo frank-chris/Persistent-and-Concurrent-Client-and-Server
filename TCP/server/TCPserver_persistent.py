@@ -3,6 +3,10 @@ import os
 from socket import AF_INET, SOCK_STREAM
 import sys
 
+if len(sys.argv) != 4:
+    print("Usage:\npython3 TCPserver_persistent.py buffer_size disable_nagle?(y/n) disable_delayed_ack?(y/n)\nExample:\npython3 TCPserver_persistent.py 32 y y")
+    exit()
+
 BUFFER_SIZE = int(sys.argv[1])
 
 HOST = "127.0.0.1"
