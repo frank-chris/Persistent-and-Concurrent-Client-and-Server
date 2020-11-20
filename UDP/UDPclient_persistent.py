@@ -4,8 +4,8 @@ from socket import AF_INET, SOCK_DGRAM
 import time
 import sys
 
-if len(sys.argv) != 2:
-    print("Usage:\npython3 UDPclient_persistent.py buffer_size")
+if (len(sys.argv) <= 2) or not((sys.argv[1]).isnumeric()):
+    print("Usage:\npython3 UDPclient_persistent.py buffer_size file_name [file_name ...]\nExample:\npython3 UDPclient_persistent.py 32 Bible.txt Ramayana.txt")
     exit()
 
 BUFFER_SIZE = int(sys.argv[1])
@@ -16,22 +16,13 @@ PORT = 12345
 # create the client socket
 client_socket = socket.socket(AF_INET, SOCK_DGRAM)
 
-while True:
-    # ask user for the name of the file to receieve
-    filename = input("Which file do you want to receive?\n(Enter '<EXIT>' to close the socket and exit)\n")
-  
+for filename in sys.argv[2:]:
     if ("." not in filename) and (filename != "<EXIT>"):
         print("Invalid filename")
         continue
 
     # send the filename to the server
     client_socket.sendto(str(filename).encode(), (HOST, PORT))
-
-    # exit the loop
-    if filename == "<EXIT>":
-        print("Closing the socket and exiting")
-        time.sleep(2)
-        break
 
     # create the name with which the file is to be saved
     newfilename = filename.split('.')[0] + "UDP" + str(os.getpid()) + "." + filename.split('.')[1]
@@ -68,17 +59,18 @@ while True:
                     break
                 # write to the file
                 f.write(bytes_read)
+                end_time = time.time()
             except socket.timeout:
                 print("\nTime out: Closing socket")
                 break
-
-    end_time = time.time()
 
     # get the file size
     filesize = os.path.getsize(newfilename)
 
     # print received message
     print("\n" + str(filename)  + "(" + str(filesize) + " Bytes)" + " received in " + str(end_time-start_time) + " seconds. Saved as " + newfilename)
+
+client_socket.sendto("<EXIT>".encode(), (HOST, PORT))
 
 # close the client socket
 client_socket.close()
