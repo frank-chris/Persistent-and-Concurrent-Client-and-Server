@@ -5,9 +5,9 @@ import time
 import sys
 import math
 
-# if len(sys.argv) != 4:
-#     print("Usage:\npython3 TCPclient_persistent.py buffer_size disable_nagle?(y/n) disable_delayed_ack?(y/n)\nExample:\npython3 TCPclient_persistent.py 32 y y")
-#     exit()
+if (len(sys.argv) <= 2) or not((sys.argv[1]).isnumeric()):
+    print("Usage:\npython3 TCPclient_persistent.py buffer_size file_name [file_name ...]\nExample:\npython3 TCPclient_persistent.py 32 Bible.txt Ramayana.txt")
+    exit()
 
 BUFFER_SIZE = int(sys.argv[1])
 
@@ -27,22 +27,13 @@ end_time = time.time()
 
 print("[+] Connected(took " + str(end_time-start_time) + " seconds).")
 
-while True:
-    # ask user for the name of the file to receieve
-    filename = input("Which file do you want to receive?\n(Enter '<EXIT>' to close the connection and exit)\n")
-
+for filename in sys.argv[2:]:
     if ("." not in filename) and (filename != "<EXIT>"):
         print("Invalid filename")
         continue
 
     # send the filename to the server
     client_socket.send((str(filename)).encode())
-
-    # exit the loop
-    if filename == "<EXIT>":
-        print("Closing the connection and exiting")
-        time.sleep(2)
-        break
 
     # create the name with which the file will be saved
     newfilename = filename.split('.')[0] + "TCP" + str(os.getpid()) + "." + filename.split('.')[1]
@@ -78,6 +69,8 @@ while True:
 
     # print received message
     print("\n" + str(filename)  + "(" + str(filesize) + " Bytes)" + " received in " + str(end_time-start_time) + " seconds. Saved as " + newfilename)
+
+client_socket.send("<EXIT>".encode())
 
 # close the client socket
 client_socket.close()

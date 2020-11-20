@@ -4,9 +4,9 @@ from socket import AF_INET, SOCK_STREAM
 import sys
 import time
 
-# if len(sys.argv) != 4:
-#     print("Usage:\npython3 TCPserver_persistent.py buffer_size disable_nagle?(y/n) disable_delayed_ack?(y/n)\nExample:\npython3 TCPserver_persistent.py 32 y y")
-#     exit()
+if len(sys.argv) != 2:
+    print("Usage:\npython3 TCPserver_persistent.py buffer_size\nExample:\npython3 TCPserver_persistent.py 32")
+    exit()
 
 BUFFER_SIZE = int(sys.argv[1])
 
