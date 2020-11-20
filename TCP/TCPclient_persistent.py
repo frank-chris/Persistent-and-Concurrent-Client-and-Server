@@ -3,10 +3,11 @@ import os
 from socket import AF_INET, SOCK_STREAM
 import time
 import sys
+import math
 
-if len(sys.argv) != 4:
-    print("Usage:\npython3 TCPclient_persistent.py buffer_size disable_nagle?(y/n) disable_delayed_ack?(y/n)\nExample:\npython3 TCPclient_persistent.py 32 y y")
-    exit()
+# if len(sys.argv) != 4:
+#     print("Usage:\npython3 TCPclient_persistent.py buffer_size disable_nagle?(y/n) disable_delayed_ack?(y/n)\nExample:\npython3 TCPclient_persistent.py 32 y y")
+#     exit()
 
 BUFFER_SIZE = int(sys.argv[1])
 
@@ -15,14 +16,6 @@ PORT = 12345
 
 # create the client socket
 client_socket = socket.socket(AF_INET, SOCK_STREAM)
-
-# disable Nagle's Algorithm if user wants to
-if (sys.argv[2] == "Y" or sys.argv[2] == "y"):
-    client_socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, True)
-
-# disable Delayed ACK if user wants to
-if (sys.argv[3] == "Y" or sys.argv[3] == "y"):
-    client_socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_QUICKACK, True)
 
 start_time = time.time()
 
@@ -62,14 +55,17 @@ while True:
     else:
         print("File found.")
 
+    # receive expected file size
+    expected_filesize = int(client_socket.recv(1024).decode())
+
     start_time = time.time()
 
     # start receiving the file and writing into a file
     print("Receiving " + str(filename), end ="...")
     with open(newfilename, "wb") as f:
-        while True:
+        for _ in range(math.ceil(expected_filesize/BUFFER_SIZE)):
             bytes_read = client_socket.recv(BUFFER_SIZE)
-            if bytes_read == "<FIN>".encode():    
+            if not bytes_read:    
                 # file transmitting is done
                 break
             # write to the file

@@ -2,10 +2,11 @@ import socket
 import os
 from socket import AF_INET, SOCK_STREAM
 import sys
+import time
 
-if len(sys.argv) != 4:
-    print("Usage:\npython3 TCPserver_persistent.py buffer_size disable_nagle?(y/n) disable_delayed_ack?(y/n)\nExample:\npython3 TCPserver_persistent.py 32 y y")
-    exit()
+# if len(sys.argv) != 4:
+#     print("Usage:\npython3 TCPserver_fork.py buffer_size disable_nagle?(y/n) disable_delayed_ack?(y/n)\nExample:\npython3 TCPserver_fork.py 32 y y")
+#     exit()
 
 BUFFER_SIZE = int(sys.argv[1])
 
@@ -47,6 +48,11 @@ def handle_client(client_socket):
             client_socket.send("<NOTFOUND>".encode())
             continue
 
+        time.sleep(0.3)
+        # inform the client about the file size 
+        client_socket.send(str(filesize).encode())
+        time.sleep(0.3)
+
         # start sending file
         print("Sending " + str(filename) + "(" + str(filesize) + " Bytes)", end ="...")
         with open(filename, "rb") as f:
@@ -58,8 +64,6 @@ def handle_client(client_socket):
                     break
                 # sendall ensures transmission even in busy networks
                 client_socket.sendall(bytes_read)
-        
-        client_socket.send("<FIN>".encode())
 
         # print sent message
         print("\n" + str(filename)  + "(" + str(filesize) + " Bytes)" + " sent.")
@@ -69,14 +73,6 @@ server_socket = socket.socket(AF_INET, SOCK_STREAM)
 
 # bind the socket to our local address
 server_socket.bind((HOST, PORT))
-
-# disable Nagle's Algorithm if user wants to
-if (sys.argv[2] == "Y" or sys.argv[2] == "y"):
-    server_socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, True)
-
-# disable Delayed ACK if user wants to
-if (sys.argv[3] == "Y" or sys.argv[3] == "y"):
-    server_socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_QUICKACK, True)
 
 # enabling our server to accept connections
 server_socket.listen(4)
