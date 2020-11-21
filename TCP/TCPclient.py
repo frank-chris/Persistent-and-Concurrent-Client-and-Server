@@ -66,6 +66,8 @@ with open(newfilename, "wb") as f:
         # write to the file
         f.write(bytes_read)
 
+client_socket.send("<EXIT>".encode())
+
 # close the client socket
 client_socket.close()
 
@@ -76,7 +78,4 @@ end_time = time.time()
 filesize = os.path.getsize(newfilename)
 
 # print received message
-print("\n" + str(filename)  + "(" + str(filesize) + " Bytes)" + " received. Saved as " + newfilename)
-
-# print elapsed time
-print("Elapsed time: " + str(end_time-start_time) + " seconds")
+print("\n" + str(filename)  + "(" + str(filesize) + " Bytes)" + " received. Saved as " + newfilename + ". Elapsed time: " + str(end_time-start_time) + " seconds")

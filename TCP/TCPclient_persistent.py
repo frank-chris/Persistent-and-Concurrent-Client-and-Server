@@ -48,6 +48,8 @@ for filename in sys.argv[2:]:
     else:
         print("File found.")
 
+    client_socket.send("<AVAILABILITYRECVD".encode())
+
     # receive expected file size
     expected_filesize = int(client_socket.recv(1024).decode())
 

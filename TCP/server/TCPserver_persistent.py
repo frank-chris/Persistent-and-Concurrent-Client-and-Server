@@ -50,6 +50,8 @@ while True:
             print("File not available.")
             client_socket.send("<NOTFOUND>".encode())
             continue
+        
+        availability_status = client_socket.recv(1024).decode()
 
         # inform the client about the file size 
         client_socket.send(str(filesize).encode())
