@@ -48,10 +48,10 @@ def handle_client(client_socket):
             client_socket.send("<NOTFOUND>".encode())
             continue
 
-        time.sleep(0.3)
         # inform the client about the file size 
         client_socket.send(str(filesize).encode())
-        time.sleep(0.3)
+
+        filesize_status = client_socket.recv(1024).decode()
 
         # start sending file
         print("Sending " + str(filename) + "(" + str(filesize) + " Bytes)", end ="...")

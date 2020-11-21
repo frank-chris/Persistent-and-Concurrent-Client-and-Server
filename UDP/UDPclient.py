@@ -13,14 +13,13 @@ PORT = 12345
 client_socket = socket.socket(AF_INET, SOCK_DGRAM)
 
 # ask user for the name of the file to receieve
-filename = input("Which file do you want to receive? ")
+filename = sys.argv[2]
 
 # create the name with which the file is to be saved
 newfilename = filename.split('.')[0] + "UDP" + str(os.getpid()) + "." + filename.split('.')[1]
 
 # start timer
 start_time = time.time()
-flag = 0
 
 # send the filename to the server
 client_socket.sendto(str(filename).encode(), (HOST, PORT))
@@ -51,24 +50,22 @@ with open(newfilename, "wb") as f:
             # 3 seconds time out
             client_socket.settimeout(3)
             bytes_read, address = client_socket.recvfrom(BUFFER_SIZE)
-            # end timer
-            end_time = time.time()
-            flag = 1
             if not bytes_read:    
                 # nothing is received means that file transmitting is done
                 break
             # write to the file
             f.write(bytes_read)
+            end_time = time.time()
         except socket.timeout:
             print("\nTime out: Closing socket")
             break
 
-# close the client socket
-client_socket.close()
+close_time = time.time()
 
-# end timer
-if (flag == 0):
-    end_time = time.time()
+# close the client socket
+client_socket.close()    
+
+close_connection_time = time.time() - close_time
 
 # get the file size
 filesize = os.path.getsize(newfilename)
@@ -77,4 +74,4 @@ filesize = os.path.getsize(newfilename)
 print("\n" + str(filename)  + "(" + str(filesize) + " Bytes)" + " received. Saved as " + newfilename)
 
 # print elapsed time
-print("Elapsed time: " + str(end_time-start_time))
+print("Elapsed time: " + str((end_time-start_time)+close_connection_time))

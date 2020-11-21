@@ -31,12 +31,14 @@ for filename in sys.argv[2:]:
     if ("." not in filename) and (filename != "<EXIT>"):
         print("Invalid filename")
         continue
+    
+    # create the name with which the file will be saved
+    newfilename = filename.split('.')[0] + "TCP" + str(os.getpid()) + "." + filename.split('.')[1]
+
+    start_time = time.time()
 
     # send the filename to the server
     client_socket.send((str(filename)).encode())
-
-    # create the name with which the file will be saved
-    newfilename = filename.split('.')[0] + "TCP" + str(os.getpid()) + "." + filename.split('.')[1]
 
     # receive the message from server indicating whether requested file is available or not
     availability = client_socket.recv(1024).decode()
@@ -49,7 +51,8 @@ for filename in sys.argv[2:]:
     # receive expected file size
     expected_filesize = int(client_socket.recv(1024).decode())
 
-    start_time = time.time()
+    # reply that client received the size
+    client_socket.send("<FILESIZERECVD".encode())
 
     # start receiving the file and writing into a file
     print("Receiving " + str(filename), end ="...")

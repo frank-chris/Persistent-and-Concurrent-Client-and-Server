@@ -3,6 +3,7 @@ import os
 from socket import AF_INET, SOCK_STREAM
 import time
 import sys
+import math
 
 BUFFER_SIZE = int(sys.argv[1])
 
@@ -21,7 +22,7 @@ if (sys.argv[3] == "Y" or sys.argv[3] == "y"):
     client_socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_QUICKACK, True)
 
 # ask user for the name of the file to receieve
-filename = input("Which file do you want to receive? ")
+filename = sys.argv[4]
 
 # create the name with which the file will be saved
 newfilename = filename.split('.')[0] + "TCP" + str(os.getpid()) + "." + filename.split('.')[1]
@@ -46,10 +47,18 @@ if availability == "<NOTFOUND>":
 else:
     print("File found.")
 
+client_socket.send("<AVAILABILITYRECVD".encode())
+
+# receive expected file size
+expected_filesize = int(client_socket.recv(1024).decode())
+
+# reply that client received the size
+client_socket.send("<FILESIZERECVD".encode())
+
 # start receiving the file and writing into a file
 print("Receiving " + str(filename), end ="...")
 with open(newfilename, "wb") as f:
-    while True:
+    for _ in range(math.ceil(expected_filesize/BUFFER_SIZE)):
         bytes_read = client_socket.recv(BUFFER_SIZE)
         if not bytes_read:    
             # nothing is received means that file transmitting is done

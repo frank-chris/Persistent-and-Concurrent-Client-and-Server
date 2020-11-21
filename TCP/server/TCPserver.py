@@ -46,6 +46,13 @@ except FileNotFoundError:
     server_socket.close()
     exit()
 
+availability_status = client_socket.recv(1024).decode()
+
+# inform the client about the file size 
+client_socket.send(str(filesize).encode())
+
+filesize_status = client_socket.recv(1024).decode()
+
 # start sending file
 print("Sending " + str(filename) + "(" + str(filesize) + " Bytes)", end ="...")
 with open(filename, "rb") as f:

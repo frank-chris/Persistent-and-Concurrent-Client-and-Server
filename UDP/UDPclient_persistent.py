@@ -21,11 +21,13 @@ for filename in sys.argv[2:]:
         print("Invalid filename")
         continue
 
-    # send the filename to the server
-    client_socket.sendto(str(filename).encode(), (HOST, PORT))
-
     # create the name with which the file is to be saved
     newfilename = filename.split('.')[0] + "UDP" + str(os.getpid()) + "." + filename.split('.')[1]
+
+    start_time = time.time()
+
+    # send the filename to the server
+    client_socket.sendto(str(filename).encode(), (HOST, PORT))
 
     try:
         # 3 seconds time out
@@ -43,8 +45,6 @@ for filename in sys.argv[2:]:
         # close the client socket
         client_socket.close()
         exit()
-
-    start_time = time.time()
 
     # start receiving the file and writing into a file
     print("Receiving " + str(filename), end ="...")

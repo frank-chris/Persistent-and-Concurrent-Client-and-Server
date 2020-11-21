@@ -5,7 +5,7 @@ import sys
 import time
 
 if len(sys.argv) != 2:
-    print("Usage:\npython3 TCPserver_persistent.py buffer_size\nExample:\npython3 TCPserver_persistent.py 32")
+    print("Usage:\npython3 TCPserver_persistent.py buffer_size\nExample:\npython3 TCPserver_persistent.py 32768")
     exit()
 
 BUFFER_SIZE = int(sys.argv[1])
@@ -51,10 +51,10 @@ while True:
             client_socket.send("<NOTFOUND>".encode())
             continue
 
-        time.sleep(0.3)
         # inform the client about the file size 
         client_socket.send(str(filesize).encode())
-        time.sleep(0.3)
+        
+        filesize_status = client_socket.recv(1024).decode()
 
         # start sending file
         print("Sending " + str(filename) + "(" + str(filesize) + " Bytes)", end ="...")
