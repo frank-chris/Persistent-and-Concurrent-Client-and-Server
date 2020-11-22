@@ -42,6 +42,7 @@ client_socket.send((str(filename)).encode())
 availability = client_socket.recv(1024).decode()
 if availability == "<NOTFOUND>":
     print("File not available.")
+    client_socket.send("<EXIT>".encode())
     client_socket.close()
     exit()
 else:
