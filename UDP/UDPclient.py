@@ -1,6 +1,6 @@
 ##############################################################
 #
-# UDP Client Script written for Assignment - 3 and used 
+# Non-persistent UDP Client Script written for Assignment - 3 and used 
 # in Q1 of Assignment - 4 
 # 
 # Author: Chris Francis, 18110041
@@ -16,6 +16,11 @@ import os
 from socket import AF_INET, SOCK_DGRAM
 import time
 import sys
+
+# if proper arguments are not provided
+if len(sys.argv) != 3:
+    print("Usage:\npython3 UDPclient.py buffer_size file_name\nExample:\npython3 UDPclient.py 32768 Bible.txt")
+    exit()
 
 # buffer size in bytes
 BUFFER_SIZE = int(sys.argv[1])

@@ -1,3 +1,15 @@
+#############################################################################
+#
+# Persistent TCP Client Script written for Assignment - 4 
+# 
+# Author: Chris Francis, 18110041
+#
+# Usage: python3 TCPclient_persistent.py (buffer size) (filename) [filename ...]
+# 
+# Example: python3 TCPclient_persistent.py 32768 Bible.txt Ramayana.txt
+#
+#############################################################################
+
 import socket
 import os
 from socket import AF_INET, SOCK_STREAM
@@ -5,13 +17,18 @@ import time
 import sys
 import math
 
+# if proper arguments are not provided
 if (len(sys.argv) <= 2) or not((sys.argv[1]).isnumeric()):
     print("Usage:\npython3 TCPclient_persistent.py buffer_size file_name [file_name ...]\nExample:\npython3 TCPclient_persistent.py 32 Bible.txt Ramayana.txt")
     exit()
 
+# buffer size in bytes
 BUFFER_SIZE = int(sys.argv[1])
 
+# server IP address
 HOST = "127.0.0.1"
+
+# port number
 PORT = 12345
 
 # create the client socket
@@ -27,6 +44,7 @@ end_time = time.time()
 
 print("[+] Connected(took " + str(end_time-start_time) + " seconds).")
 
+# loop through filenames
 for filename in sys.argv[2:]:
     if ("." not in filename) and (filename != "<EXIT>"):
         print("Invalid filename")
@@ -48,6 +66,7 @@ for filename in sys.argv[2:]:
     else:
         print("File found.")
 
+    # reply that file availability was received
     client_socket.send("<AVAILABILITYRECVD".encode())
 
     # receive expected file size
@@ -75,6 +94,7 @@ for filename in sys.argv[2:]:
     # print received message
     print("\n" + str(filename)  + "(" + str(filesize) + " Bytes)" + " received in " + str(end_time-start_time) + " seconds. Saved as " + newfilename)
 
+# inform server that client is closing
 client_socket.send("<EXIT>".encode())
 
 # close the client socket

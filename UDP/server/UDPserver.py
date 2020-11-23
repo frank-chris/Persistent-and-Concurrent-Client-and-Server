@@ -1,6 +1,6 @@
 ##############################################################################################
 #
-# UDP Server Script written for Assignment - 3 and used in Q1 of Assignment -4 
+# Non-persistent UDP Server Script written for Assignment - 3 and used in Q1 of Assignment -4 
 # 
 # Author: Chris Francis, 18110041
 #

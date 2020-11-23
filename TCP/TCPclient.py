@@ -1,3 +1,16 @@
+##############################################################
+#
+# Non-persistent TCP Client Script written for Assignment - 3 
+# and used in Assignment - 4 
+# 
+# Author: Chris Francis, 18110041
+#
+# Usage: python3 TCPclient.py (buffer size) (disable_nagle's_algorithm?y/n) (disable_delayed_ack?y/n) (filename)
+# 
+# Example: python3 TCPclient.py 32768 n n Bible.txt
+#
+##############################################################
+
 import socket
 import os
 from socket import AF_INET, SOCK_STREAM
@@ -5,9 +18,18 @@ import time
 import sys
 import math
 
+# if proper arguments are not provided
+if len(sys.argv) != 5:
+    print("Usage:\npython3 TCPclient.py buffer_size disable_nagle's_algorithm?(y/n) disable_delayed_ack?(y/n) file_name\nExample:\npython3 TCPclient.py 32768 n n Bible.txt")
+    exit()
+
+# buffer size in bytes
 BUFFER_SIZE = int(sys.argv[1])
 
+# server IP address
 HOST = "127.0.0.1"
+
+# port number
 PORT = 12345
 
 # create the client socket
@@ -21,7 +43,7 @@ if (sys.argv[2] == "Y" or sys.argv[2] == "y"):
 if (sys.argv[3] == "Y" or sys.argv[3] == "y"):
     client_socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_QUICKACK, True)
 
-# ask user for the name of the file to receieve
+# name of the file to receieve
 filename = sys.argv[4]
 
 # create the name with which the file will be saved
@@ -48,12 +70,13 @@ if availability == "<NOTFOUND>":
 else:
     print("File found.")
 
+# reply that the file availability message was received
 client_socket.send("<AVAILABILITYRECVD".encode())
 
 # receive expected file size
 expected_filesize = int(client_socket.recv(1024).decode())
 
-# reply that client received the size
+# reply that file size was received
 client_socket.send("<FILESIZERECVD".encode())
 
 # start receiving the file and writing into a file
@@ -67,6 +90,7 @@ with open(newfilename, "wb") as f:
         # write to the file
         f.write(bytes_read)
 
+# inform server that client is closing
 client_socket.send("<EXIT>".encode())
 
 # close the client socket

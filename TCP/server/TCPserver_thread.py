@@ -1,3 +1,15 @@
+#############################################################################
+#
+# Thread-model TCP server Script written for Assignment - 4 
+# 
+# Author: Chris Francis, 18110041
+#
+# Usage: python3 TCPserver_thread.py (buffer size)
+# 
+# Example: python3 TCPserver_thread.py 32768
+#
+#############################################################################
+
 import socket
 import os
 from socket import AF_INET, SOCK_STREAM
@@ -5,13 +17,18 @@ import sys
 import _thread
 import time
 
+# if arguments are not provided properly
 if len(sys.argv) != 2:
     print("Usage:\npython3 TCPserver_thread.py buffer_size\nExample:\npython3 TCPserver_thread.py 32")
     exit()
 
+# buffer size in bytes
 BUFFER_SIZE = int(sys.argv[1])
 
+# IP address
 HOST = "127.0.0.1"
+
+# port number
 PORT = 12345
 
 # function that handles a client
@@ -38,11 +55,13 @@ def handle_client(client_socket):
             client_socket.send("<NOTFOUND>".encode())
             continue
         
+        # receive reply from client
         availability_status = client_socket.recv(1024).decode()
 
         # inform the client about the file size 
         client_socket.send(str(filesize).encode())
         
+        # receive reply from client
         filesize_status = client_socket.recv(1024).decode()
 
         # start sending file

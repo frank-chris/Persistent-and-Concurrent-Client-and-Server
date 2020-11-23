@@ -1,11 +1,33 @@
+##############################################################
+#
+# Non-persistent TCP server Script written for Assignment - 3 
+# and used in Assignment - 4 
+# 
+# Author: Chris Francis, 18110041
+#
+# Usage: python3 TCPserver.py (buffer size) (disable_nagle's_algorithm?y/n) (disable_delayed_ack?y/n)
+# 
+# Example: python3 TCPserver.py 32768 n n
+#
+##############################################################
+
 import socket
 import os
 from socket import AF_INET, SOCK_STREAM
 import sys
 
+# if proper arguments are not provided
+if len(sys.argv) != 4:
+    print("Usage:\npython3 TCPserver.py buffer_size disable_nagle's_algorithm?(y/n) disable_delayed_ack?(y/n)\nExample:\npython3 TCPserver.py 32768 n n")
+    exit()
+
+# buffer size in bytes
 BUFFER_SIZE = int(sys.argv[1])
 
+# IP address
 HOST = "127.0.0.1"
+
+# port number
 PORT = 12345
 
 # creating server socket
@@ -46,11 +68,13 @@ except FileNotFoundError:
     server_socket.close()
     exit()
 
+# receive reply from client
 availability_status = client_socket.recv(1024).decode()
 
 # inform the client about the file size 
 client_socket.send(str(filesize).encode())
 
+# receive reply from client
 filesize_status = client_socket.recv(1024).decode()
 
 # start sending file
