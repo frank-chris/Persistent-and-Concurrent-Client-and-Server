@@ -1,3 +1,24 @@
+#############################################################################
+#
+# Script for question 4
+# 
+# Author: Chris Francis, 18110041
+#
+# Usage: 
+# for 4 k) a) run: sudo python3 4.py ka 1000
+#
+# for 4 k) b) run: sudo python3 4.py kb 1000
+#
+# for 4 l) a) run: sudo python3 4.py la 1000
+#
+# for 4 l) b) run: sudo python3 4.py lb 1000
+#
+# for 4 m) a) run: sudo python3 4.py ma 1000
+#
+# for 4 m) b) run: sudo python3 4.py mb 1000
+#
+#############################################################################
+
 from mininet.net import Mininet
 from mininet.cli import CLI
 from mininet.util import pmonitor
@@ -5,7 +26,10 @@ from mininet.link import TCLink
 import sys
 import time
 
+# question number 
 question_number = sys.argv[1]
+
+# bandwidth for link AS
 BW = int(sys.argv[2]) 
 
 popens = {}
@@ -106,7 +130,7 @@ else:
 
 time.sleep(13)
 
-# monitoring 
+# monitoring outputs of scripts
 for h, line in pmonitor(popens, timeoutms=500):
     if h:
         print(str(h.name) +": " + str(line), end = '')

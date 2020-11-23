@@ -1,3 +1,16 @@
+#############################################################################
+#
+# Thread-model TCP server Script to be used in Mininet questions 
+# written for Assignment - 4 
+# 
+# Author: Chris Francis, 18110041
+#
+# Usage: python3 TCPserver_thread_mn.py (buffer size) (server_ip_address)
+# 
+# Example: python3 TCPserver_thread_mn.py 32768 127.0.0.1
+#
+#############################################################################
+
 import socket
 import os
 from socket import AF_INET, SOCK_STREAM
@@ -5,13 +18,18 @@ import sys
 import _thread
 import time
 
+# if arguments are not provided properly
 if len(sys.argv) != 3:
     print("Usage:\npython3 TCPserver_thread_mn.py buffer_size server_ip_address\nExample:\npython3 TCPserver_thread_mn.py 32768 127.0.0.1")
     exit()
 
+# buffer size in bytes
 BUFFER_SIZE = int(sys.argv[1])
 
+# IP address
 HOST = sys.argv[2]
+
+# port number
 PORT = 12345
 
 # function that handles a client
@@ -38,11 +56,13 @@ def handle_client(client_socket):
             client_socket.send("<NOTFOUND>".encode())
             continue
         
+        # receive reply from client
         availability_status = client_socket.recv(1024).decode()
 
         # inform the client about the file size 
         client_socket.send(str(filesize).encode())
         
+        # receive reply from client
         filesize_status = client_socket.recv(1024).decode()
 
         # start sending file

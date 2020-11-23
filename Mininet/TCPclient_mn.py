@@ -1,3 +1,16 @@
+##############################################################
+#
+# Non-persistent TCP Client Script to be used in Mininet questions 
+# written for Assignment - 4 
+# 
+# Author: Chris Francis, 18110041
+#
+# Usage: python3 TCPclient_mn.py (buffer size) (server_ip_address) (filename)
+# 
+# Example: python3 TCPclient_mn.py 32768 127.0.0.1 Bible.txt
+#
+##############################################################
+
 import socket
 import os
 from socket import AF_INET, SOCK_STREAM
@@ -5,19 +18,24 @@ import time
 import sys
 import math
 
+# if proper arguments are not provided
 if len(sys.argv) != 4:
     print("Usage:\npython3 TCPclient_mn.py buffer_size server_ip_address file_name\nExample:\npython3 TCPclient_mn.py 32768 127.0.0.1 Bible.txt")
     exit()
 
+# buffer size in bytes
 BUFFER_SIZE = int(sys.argv[1])
 
+# server IP address
 HOST = sys.argv[2]
+
+# port number
 PORT = 12345
 
 # create the client socket
 client_socket = socket.socket(AF_INET, SOCK_STREAM)
 
-# ask user for the name of the file to receieve
+# name of the file to receieve
 filename = sys.argv[3]
 
 # create the name with which the file will be saved
@@ -44,6 +62,7 @@ if availability == "<NOTFOUND>":
 else:
     print("File found.")
 
+# reply that the file availability message was received
 client_socket.send("<AVAILABILITYRECVD".encode())
 
 # receive expected file size
@@ -63,6 +82,7 @@ with open(newfilename, "wb") as f:
         # write to the file
         f.write(bytes_read)
 
+# inform server that client is closing
 client_socket.send("<EXIT>".encode())
 
 # close the client socket

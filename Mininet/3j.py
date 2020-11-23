@@ -1,3 +1,17 @@
+#############################################################################
+#
+# Script for question 3j)
+# 
+# Author: Chris Francis, 18110041
+#
+# Usage: 
+# sudo python3 3j.py (no. of switches)
+# 
+# Example: 
+# sudo python3 3j.py 2
+#
+#############################################################################
+
 from mininet.topo import Topo
 from mininet.net import Mininet
 from mininet.cli import CLI

@@ -1,8 +1,23 @@
+#############################################################################
+#
+# Script for questions 3e) and 3f)
+# 
+# Author: Chris Francis, 18110041
+#
+# Usage: 
+# 
+# for 3e) run: sudo python3 3e_and_3f.py Bible.txt Ramayana.txt Anna_Karenina.txt War_and_Peace.txt Brothers_Karamazov.txt
+#
+# for 3f) run: sudo python3 3e_and_3f.py Bible.txt Bible.txt Bible.txt Bible.txt Bible.txt
+#
+#############################################################################
+
 from mininet.topo import Topo
 from mininet.net import Mininet
 from mininet.cli import CLI
 from mininet.util import pmonitor
 import sys
+import time
 
 popens = {}
 
@@ -27,6 +42,8 @@ net.start()
 
 popens[h[1]] = h[1].popen("python3 server/TCPserver_thread_mn.py 32768 " + str(h[1].IP()))
 
+time.sleep(0.1)
+
 popens[h[2]] = h[2].popen("python3 TCPclient_mn.py 32768 " + str(h[1].IP()) + " " + sys.argv[1])
 
 popens[h[3]] = h[3].popen("python3 TCPclient_mn.py 32768 " + str(h[1].IP()) + " " + sys.argv[2])
@@ -38,7 +55,7 @@ popens[h[5]] = h[5].popen("python3 TCPclient_mn.py 32768 " + str(h[1].IP()) + " 
 popens[h[6]] = h[6].popen("python3 TCPclient_mn.py 32768 " + str(h[1].IP()) + " " + sys.argv[5])
 
 
-# monitoring 
+# monitoring output of scripts
 for h, line in pmonitor(popens, timeoutms=500):
     if h:
         print(str(h.name) +": " + str(line), end = '')
