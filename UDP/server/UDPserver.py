@@ -1,11 +1,32 @@
+##############################################################################################
+#
+# UDP Server Script written for Assignment - 3 and used in Q1 of Assignment -4 
+# 
+# Author: Chris Francis, 18110041
+#
+# Usage: python3 UDPserver.py (buffer size)
+# 
+# Example : python3 UDPserver.py 32768
+#
+##############################################################################################
+
 import socket
 import os
 from socket import AF_INET, SOCK_DGRAM
 import sys
 
+# if proper arguments are not provided
+if len(sys.argv) != 2:
+    print("Usage:\npython3 UDPserver.py buffer_size \nExample:\npython3 UDPserver.py 32768")
+    exit()
+
+# buffer size in bytes
 BUFFER_SIZE = int(sys.argv[1])
 
+# IP address
 HOST = "127.0.0.1"
+
+# port number
 PORT = 12345
 
 # creating server socket
